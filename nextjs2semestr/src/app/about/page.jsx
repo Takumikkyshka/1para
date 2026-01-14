@@ -1,9 +1,13 @@
-import React from 'react'
+import Counter from '../components/Counter';
 
-export default function page() {
+export default function AboutPage() {
+
+    console.log('Привет от сервера')
+
   return (
     <div>
-      <p>О нас</p>
+        О нас
+        <Counter />
     </div>
   )
 }
