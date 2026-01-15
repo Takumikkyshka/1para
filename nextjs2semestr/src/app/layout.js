@@ -14,9 +14,9 @@ export default function RootLayout({ children }) {
   return (
     // <html lang="en" className={lavishly.className}>
     <html lang="en">
-      <body className="pt-4">
+      <body className="pt-5 px-5">
         <header className="flex justify-around">
-          <div>LOGO</div>
+          <Link href="/" className="text-xl font-bold">LOGO</Link>
           <nav className="flex gap-10">
             <Link href="/">Главная</Link>
             <Link href="/products">Товары</Link>
