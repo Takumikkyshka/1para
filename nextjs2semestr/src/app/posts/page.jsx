@@ -10,10 +10,12 @@ export default async function PostPage() {
     <div>
       {
         data.map(post => (
-          <Link href={`/posts/${post.id}`} key={post.id} className="mb-5 border-b border-b-red-500">
-            <h3 className='mb-3 font-bold text-2xl'>{post.title}</h3>
-            <p>{post.content}</p>
-          </Link>
+          <div key={post.id} className="mb-5 py-5 border-b border-b-red-500">
+            <Link href={`/posts/${post.id}`}>
+              <h3 className='mb-3 font-bold text-2xl'>{post.title}</h3>
+              <p>{post.content}</p>
+            </Link>
+          </div>
         ))
       }
     </div>
