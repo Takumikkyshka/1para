@@ -4,6 +4,8 @@ export default function AboutPage() {
 
     console.log('Привет от сервера')
 
+    
+
   return (
     <div>
         О нас
