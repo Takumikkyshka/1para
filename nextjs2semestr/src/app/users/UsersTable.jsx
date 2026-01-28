@@ -1,8 +1,14 @@
 "use client";
-import { Button, message, Modal, Table } from "antd";
+import { Button, Descriptions, message, Modal, Table } from "antd";
 import React, { useActionState, useState } from "react";
 import { createUser, deleteUser, updateUser } from "../lib/serveractions";
 import InputValidated from "../components/InputValidated";
+
+// не работает с use client
+export const metadata = {
+  title: "Список пользователей",
+  description: "...",
+};
 
 export default function UsersTable({ data }) {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -42,7 +42,7 @@ export async function createUser(initialState, formData) {
   // }
 
   const schema = z.object({
-    age: z.number().min(0).max(120),
+    age: z.number().min(0).max(120, { error: "Ты бы столько не прожил" }),
     email: z.email(),
     username: z.string().min(4).max(25),
     password: z.string().min(8).max(20),
