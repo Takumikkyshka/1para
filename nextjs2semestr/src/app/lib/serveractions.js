@@ -5,53 +5,76 @@ import { prisma } from "./prisma";
 import { join } from "node:path";
 import { writeFile } from "node:fs/promises";
 import { type } from "./../../../generated/prisma/models";
+import z, { Schema } from "zod";
+import { safeParse } from "./../../../node_modules/zod/v4/classic/parse";
+import { object } from "./../../../node_modules/zod/v4/classic/schemas";
+import { message } from "antd";
 
-export async function createUser(formData) {
-  const files = formData.getAll("image");
+export async function createUser(initialState, formData) {
+  // const files = formData.getAll("image");
 
-  const availableTypes = [
-    "image/jpeg",
-    "image/png",
-    "image/webp",
-    "inage.svg+xml",
-  ];
+  // const availableTypes = [
+  //   "image/jpeg",
+  //   "image/png",
+  //   "image/webp",
+  //   "inage.svg+xml",
+  // ];
 
-  const imagesNames = [];
+  // const imagesNames = [];
 
-  for (const img of files) {
-    if (img.size > 1_000_000) {
-      console.log("Ошибка размера, максимальный: 1 МБ");
-      break;
-    }
-    if (!availableTypes.includes(img.type)) {
-      console.log("ошибка типа");
-      break;
-    }
+  // for (const img of files) {
+  //   if (img.size > 1_000_000) {
+  //     console.log("Ошибка размера, максимальный: 1 МБ");
+  //     break;
+  //   }
+  //   if (!availableTypes.includes(img.type)) {
+  //     console.log("ошибка типа");
+  //     break;
+  //   }
 
-    const buffer = Buffer.from(await img.arrayBuffer());
+  //   const buffer = Buffer.from(await img.arrayBuffer());
 
-    const imageName = Date.now() + img.name.replaceAll(" ", "_");
+  //   const imageName = Date.now() + img.name.replaceAll(" ", "_");
 
-    await writeFile(join("public", "photos", imageName), buffer);
+  //   await writeFile(join("public", "photos", imageName), buffer);
 
-    imagesNames.push({ url: `/photos/${imageName}` });
-  }
+  //   imagesNames.push({ url: `/photos/${imageName}` });
+  // }
 
-  const user = await prisma.user.create({
-    data: {
-      age: Number(formData.get("age")),
-      email: formData.get("email"),
-      username: formData.get("username"),
-      password: formData.get("password"),
-      photos: {
-        createMany: {
-          data: imagesNames,
-        },
-      },
-    },
+  const schema = z.object({
+    age: z.number().min(0).max(120),
+    email: z.email(),
+    username: z.string().min(4).max(25),
+    password: z.string().min(8).max(20),
   });
 
-  revalidatePath("/users");
+  const validationFields = schema.safeParse({
+    age: Number(formData.get("age")),
+    email: formData.get("email"),
+    username: formData.get("username"),
+    password: formData.get("password"),
+  });
+
+  if (validationFields.success) {
+    const user = await prisma.user.create({
+      data: validationFields.data,
+      // photos: {
+      //   createMany: {
+      //     data: imagesNames,
+      //   },
+      // },
+    });
+
+    revalidatePath("/users");
+
+    return {
+      message: "Успешно добавлен пользователь",
+    };
+  } else {
+    return {
+      error: validationFields.error.issues,
+    };
+  }
 }
 
 export async function deleteUser(id) {

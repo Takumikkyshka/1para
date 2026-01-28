@@ -1,7 +1,8 @@
 "use client";
-import { Button, Modal, Table } from "antd";
-import React, { useState } from "react";
+import { Button, message, Modal, Table } from "antd";
+import React, { useActionState, useState } from "react";
 import { createUser, deleteUser, updateUser } from "../lib/serveractions";
+import InputValidated from "../components/InputValidated";
 
 export default function UsersTable({ data }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -77,18 +78,52 @@ export default function UsersTable({ data }) {
     setIsModalOpen(false);
   }
 
+  const initialState = "";
+
+  const [state, formAction, pending] = useActionState(createUser, initialState);
+
   return (
     <div>
       <div>
-        <form action={createUser} className="flex mb-10 gap-x-5">
-          <input name="email" type="text" placeholder="email" />
-          <input name="username" type="text" placeholder="username" />
-          <input name="age" type="text" placeholder="age" />
-          <input name="password" type="text" placeholder="password" />
-          <input name="image" type="file" multiple />
-          <Button htmlType="submit" color="pink" variant="solid">
+        <form action={formAction} className="flex mb-10 gap-x-5">
+          <InputValidated
+            validation={state}
+            name="email"
+            type="email"
+            placeholder="email"
+          />
+          <InputValidated
+            validation={state}
+            name="username"
+            type="text"
+            placeholder="username"
+          />
+          <InputValidated
+            validation={state}
+            name="age"
+            type="number"
+            placeholder="age"
+          />
+          <InputValidated
+            validation={state}
+            name="password"
+            type="text"
+            placeholder="password"
+          />
+          {/* <input required name="email" type="email" placeholder="email" />
+          <input required name="username" type="text" placeholder="username" />
+          <input required name="age" type="number" placeholder="age" />
+          <input required name="password" type="text" placeholder="password" /> */}
+          {/* <input name="image" type="file" multiple /> */}
+          <Button
+            htmlType="submit"
+            color="pink"
+            variant="solid"
+            loading={pending}
+          >
             Создать пользователя
           </Button>
+          <p>{state?.message}</p>
         </form>
       </div>
       <Table
