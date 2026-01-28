@@ -1,5 +1,6 @@
 import Link from "next/link";
 import "./globals.css";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 
 // import { Lavishly_Yours } from 'next/font/google'
 
@@ -21,11 +22,13 @@ export default function RootLayout({ children }) {
             <Link href="/">Главная</Link>
             <Link href="/products">Товары</Link>
             <Link href="/posts">Посты</Link>
+            <Link href="/product">Продукты</Link>
             <Link href="/about">О нас</Link>
+            <Link href="/users">Пользователи</Link>
             <Link href="/about/company">Компания</Link>
           </nav>
         </header>
-        <main>{children}</main>
+        <AntdRegistry>{children}</AntdRegistry>
         <footer></footer>
       </body>
     </html>
